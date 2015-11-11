@@ -80,6 +80,22 @@ copy_structure() {
     cp -rv install-data/structure $BASEDIR
 }
 
+update_configs() {
+    sed -i \
+        -e "s#{{MSMTP}}#$MSMTP#g" \
+        -e "s#{{PROCMAIL}}#$PROCMAIL#g" \
+        -e "s#{{BASEDIR}}#$BASEDIR#g" \
+        -e "s#{{EMAILADDR}}#$EMAILADDR#g" \
+        -e "s#{{USERNAME}}#$USERNAME#g" \
+        -e "s#{{PASSWORD}}#$PASSWORD#g" \
+        -e "s#{{SMTPSERVER}}#$SMTPSERVER#g" \
+        -e "s#{{POPSERVER}}#$POPSERVER#g" \
+        $BASEDIR/conf/getmailrc \
+        $BASEDIR/conf/msmtprc \
+        $BASEDIR/conf/muttrc \
+        $BASEDIR/conf/procmailrc
+}
+
 DEP="mutt msmtp gpg getmail"
 DEFAULT_BASEDIR="$HOME/.backup_to_mail"
 cd $(dirname $0)
@@ -93,11 +109,11 @@ collect_info
 
 # copy the directory structure
 copy_structure
-#debug
-exit
 
 # update the config file with the supplied info
 update_configs
+#debug
+exit
 
 # copy the scripts
 copy_scripts

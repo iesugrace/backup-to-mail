@@ -7,7 +7,7 @@
 set sendmail="{{MSMTP}} --file={{BASEDIR}}/conf/msmtprc"
 
 #建立信箱
-set folder="{{BASEDIR}/data"
+set folder="{{BASEDIR}}/data"
 set mbox="{{BASEDIR}}/data/inbox"
 #set mbox_type=maildir
 set spoolfile="{{BASEDIR}}/data/inbox"
