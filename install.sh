@@ -154,16 +154,22 @@ copy_structure() {
     chmod 600 $BASEDIR/conf/msmtprc
 }
 
+# escape the '#' character for using in a sed
+# operation when sed takes a '#' for its separator
+e() {
+    sed -r 's/#/\\#/g' <<< "$1"
+}
+
 update_configs() {
     sed -i \
         -e "s#{{MSMTP}}#$MSMTP#g" \
         -e "s#{{PROCMAIL}}#$PROCMAIL#g" \
-        -e "s#{{BASEDIR}}#$BASEDIR#g" \
-        -e "s#{{EMAILADDR}}#$EMAILADDR#g" \
-        -e "s#{{USERNAME}}#$USERNAME#g" \
-        -e "s#{{PASSWORD}}#$PASSWORD#g" \
-        -e "s#{{SMTPSERVER}}#$SMTPSERVER#g" \
-        -e "s#{{POPSERVER}}#$POPSERVER#g" \
+        -e "s#{{BASEDIR}}#$(e $BASEDIR)#g" \
+        -e "s#{{EMAILADDR}}#$(e $EMAILADDR)#g" \
+        -e "s#{{USERNAME}}#$(e $USERNAME)#g" \
+        -e "s#{{PASSWORD}}#$(e $PASSWORD)#g" \
+        -e "s#{{SMTPSERVER}}#$(e $SMTPSERVER)#g" \
+        -e "s#{{POPSERVER}}#$(e $POPSERVER)#g" \
         $BASEDIR/conf/getmailrc \
         $BASEDIR/conf/msmtprc \
         $BASEDIR/conf/muttrc \
@@ -175,10 +181,10 @@ copy_scripts() {
 
     local B2E=$SCRIPTDIR/b2e
     sed -i \
-        -e "s#{{RECIPIENT}}#$RECIPIENT#g" \
-        -e "s#{{GPGKEYID}}#$GPGKEYID#g" \
-        -e "s#{{BASEDIR}}#$BASEDIR#g" \
-        -e "s#{{B2E}}#$B2E#g" \
+        -e "s#{{RECIPIENT}}#$(e $RECIPIENT)#g" \
+        -e "s#{{GPGKEYID}}#$(e $GPGKEYID)#g" \
+        -e "s#{{BASEDIR}}#$(e $BASEDIR)#g" \
+        -e "s#{{B2E}}#$(e $B2E)#g" \
         $SCRIPTDIR/b2e \
         $SCRIPTDIR/fb
 }
