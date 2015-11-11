@@ -150,6 +150,7 @@ copy_structure() {
         echo "failed to copy structural data" >&2
         exit 1
     fi
+    chmod 600 $BASEDIR/conf/msmtprc
 }
 
 update_configs() {
