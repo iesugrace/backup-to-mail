@@ -1,0 +1,16 @@
+[options]
+verbose = 1
+read_all = false
+message_log = {{BASEDIR}}/log/getmail.log
+
+[retriever]
+type = SimplePOP3Retriever
+server = {{POPSERVER}}
+username = {{USERNAME}}
+password = {{PASSWORD}}
+
+[destination]
+type = MDA_external
+path = {{PROCMAIL}}
+arguments = ("-f", "%(sender)", "-m", "{{BASEDIR}}/conf/procmailrc")
+unixfrom = true

@@ -1,0 +1,115 @@
+# 这个配置文件是在 lixuebai (李雪白) 的基础之上修改的
+
+#编辑器 直接在 Mutt 的终端里使用非图形界面的 Emacs (emacs -nw)
+#set editor="emacs -nw"
+
+#设置邮件发送程序
+set sendmail="{{MSMTP}} --file={{BASEDIR}}/conf/msmtprc"
+
+#建立信箱
+set folder="{{BASEDIR}/data"
+set mbox="{{BASEDIR}}/data/inbox"
+#set mbox_type=maildir
+set spoolfile="{{BASEDIR}}/data/inbox"
+set postponed="{{BASEDIR}}/data/postponed"
+
+# 让mutt监视下面几个邮箱，并随时报告新邮件
+mailboxes "=inbox"
+#mailboxes "=inbox"
+#mailboxes "=USTCstudent"
+#mailboxes "=USTCteacher"
+#mailboxes "=ustcbbs"
+#mailboxes "=Gmail"
+
+set check_new = yes
+set timeout = 600
+
+#set alternates="xxx@mail.ustc.edu.cn" 
+#这是一个格式字符串，用来控制你的index的列表显示。它的缺省定义是
+
+set index_format="%4C %Z %{%b %d} %-15.15L (%4l) %s"
+#指定你有那些信箱文件。当你按 "c" 切换信箱时，再按 Tab 键，这些信箱就可供你选择
+mailboxes Mailbox sent-mail 
+#这是一个 bool 型变量。它表明你在回信时引用原文是否加入原文的邮件头。
+set header=no 
+#可以设置为 yes, no, ask-yes, 或者 ask-no. 这是说，当你按q退出时，是否提示你(ask-yes,ask-no)，
+#还是直接就退出了(yes)，还是根本不理你(no)。
+set quit=ask-yes
+#html类型的附件是允许直接通过 .mailcap 浏览的？
+#doc类型的附件通过wvware转成html 浏览
+#auto_view text/html application/msword
+
+#这也是一个提示性变量。它是确定当你退出时，是否提示你把信件从 spool 移动到的 mbox 文件。
+set move=no
+#当 Mutt 用 thread 方式显示时，是否用纯 ascii 表示树状列表。
+set ascii_chars=yes
+#回信时是否包含原文。
+set include
+#回信的引文之前插入那个符号？
+set indent_str="> "
+#设置你自己的邮件头。
+my_hdr From: data_backup_01@126.com
+#打分
+#新信件+4分,主题包含“通知”的+2，主题包含 “Circulation” +3, 已经标记删除的 -5，上次没有读的 +1，包含 “believe”的 -10(垃圾广告！)。
+score "~N" +4
+score "~s 通知" +2
+score "~s Circulation" +3
+score "~D" -5
+score "~O" +1
+score "~s believe" -10
+#排序方式。
+set sort=score
+#当用 thread 排序方式时，我们对各个 thread 的相对排序顺序。
+set sort_aux=date
+#如果翻到最后，再按往下翻也不会翻到下一封信件
+set pager_stop
+#如果设置，当你按 "r" 回信时，就不会再提示你输入回信地址和主题，直接进入编辑模式。
+set fast_reply
+#当你按 "t" 或者 "D" 之类的标记操作时，是否自动把光标移动到下一封信件。
+set resolve=yes
+#地址簿
+source {{BASEDIR}}/conf/mutt_alias
+#当你在 index 里按 "a" 为来信者取别名时，使用哪一个别名文件保存这个别名。
+set alias_file={{BASEDIR}}/conf/mutt_alias
+#你发出的邮件保存到那个信箱文件？比如可以像我这样每个月发出的信件放在不同的文件里。
+set record="{{BASEDIR}}/data/sent-`date +%Y-%m`"
+#你的终端支持哪一种编码的显示？这个必须和你的终端编码一样。推荐用utf8
+set charset="utf8"
+#send_charset
+set send_charset="us-ascii:iso-8859-1:utf-8:gbk"
+#外部程序退出时，是否要求用户按一个键才返回。这在察看某些shell命令输出时是必要的，
+#否则它们一下就消失了。
+set wait_key=yes
+#当你要把信件存到另一个信箱，而这个信箱已经存在时，是否提示附加？
+set noconfirmappend
+#是否把邮件头也放在编辑器里可以修改？
+set edit_headers=no
+#当你在用 pager 看信件时，在 index 留出多少行显示邮件列表？
+set pager_index_lines=4
+#告诉 Mutt 你已经订阅了那些邮件列表(mailing-list).
+#subscribe fvwm@fvwm.org
+
+#有些没有设置字符编码时
+charset-hook ^us-ascii$ gbk
+#Chinaren 等服务器发出来的信件使用了 quoted-printable 的 subject，
+#而且设置编码为 "iso8859-1"，这显然是错误的。
+#对付这个错误的办法是把 iso-8859-1 变成 gb2312 的别名
+#charset-hook ^iso-8859-1$ gb2312
+# evolution 发过来的 subject 为 utf-8 编码的邮件标题乱码！
+#那就把不是 utf-8 的编码都映射到 gbk
+charset-hook !utf-8 gbk
+
+# mutt进行pop3收信，当然之前要查看$ mutt -v 编辑情况的确编辑了pop3了。
+# 以后进入mutt按G就可以收信了。
+#set pop_user=xxx@mail.ustc.edu.cn
+#set pop_pass="xxxxxx"
+#set pop_host=202.38.64.8
+#现在不用mutt直接收信了。
+
+set realname="Data Backup"
+set from="data_backup_01@126.com"
+set use_from=yes
+set editor="vi"
+
+macro index G "!getmail -r {{BASEDIR}}/conf/getmailrc -g {{BASEDIR}}/conf/getmail\n" "Invoke getmail"
+macro pager G "!getmail -r {{BASEDIR}}/conf/getmailrc -g {{BASEDIR}}/conf/getmail\n" "Invoke getmail"
