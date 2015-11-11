@@ -13,7 +13,7 @@ MAILER="mutt -F {{BASEDIR}}/conf/muttrc"
 if [ "$#" -eq 2 ]; then
     subject="$2"
     content="$(date +'%Y-%m-%d %H:%M:%S'), $subject"
-    attachment=$(mktemp $(date +%s).XXXXXXXXXX)
+    attachment=$(mktemp /tmp/$(date +%s).XXXXXXXXXX)
     cat | xz -9 | gpg -z 0 -er "$keyid" > $attachment
     echo "$content" | $MAILER $recipient -s "$subject" -a "$attachment"
     result=$?
