@@ -112,8 +112,9 @@ Text in the square bracket is the default
 value, press enter to accept it, empty value
 is not allowed. 
 
-'base directory': you shall accept the default
-unless the path already exists.
+'base directory': directory for saving the
+config files, log files, you can simply accept
+the default.
 
 'sending server': support SMTP only.
 
@@ -182,7 +183,7 @@ copy_scripts() {
         $SCRIPTDIR/fb
 }
 
-DEP="mutt msmtp gpg getmail"
+DEP="xz mutt msmtp gpg getmail"
 DEFAULT_BASEDIR="$HOME/.backup_to_mail"
 DEFAULT_SCRIPTDIR="$HOME/bin"
 cd $(dirname $0)
