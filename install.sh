@@ -145,7 +145,11 @@ EOF
 }
 
 copy_structure() {
-    cp -r install-data/structure $BASEDIR
+    cp -fr install-data/structure $BASEDIR
+    if test $? -ne 0; then
+        echo "failed to copy structural data" >&2
+        exit 1
+    fi
 }
 
 update_configs() {
