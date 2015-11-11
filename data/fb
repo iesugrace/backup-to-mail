@@ -26,15 +26,15 @@ ENABLED=0
 B2E={{B2E}}
 
 if test "$ENABLED" = 0; then
-    echo "not enabled" >&
+    echo "not enabled" >&2
     exit 1
 fi
 
 if test -z "$files"; then
-    echo "no files configured to back up" >&
+    echo "no files configured to back up" >&2
     exit 1
 fi
 
 # You shall change the subject appropriately
 subject="Data backup (XX, YY, ZZ) $(date +'%Y%m%d%H%M')"
-tar -vcf - -T <(echo -n "$files") | B2E -s "$subject"
+tar -vcf - -T <(echo -n "$files") | $B2E -s "$subject"
