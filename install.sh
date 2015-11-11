@@ -62,8 +62,13 @@ collect_info() {
     POPSERVER=$(ask "receiving server" "pop.$domain_name")
 }
 
+copy_structure() {
+    cp -rv install-data/structure $BASEDIR
+}
+
 DEP="mutt msmtp gpg getmail"
 DEFAULT_BASEDIR="$HOME/.backup_to_mail"
+cd $(dirname $0)
 
 if ! check_dep; then
     exit 1
@@ -74,6 +79,8 @@ collect_info
 
 # copy the directory structure
 copy_structure
+#debug
+exit
 
 # update the config file with the supplied info
 update_configs
