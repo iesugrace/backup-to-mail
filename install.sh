@@ -33,7 +33,11 @@ ask() {
     while true
     do
         # stdout been captured, we use stderr instead
-        echo -n "$message [$default]: " >&2
+        if test -z "$default"; then
+            echo -n "$message: " >&2
+        else
+            echo -n "$message [$default]: " >&2
+        fi
         read $INVISIBLE input
         test -n "$INVISIBLE" && echo >&2   # output a newline when no-echo
         if test -z "$input"; then
@@ -63,21 +67,85 @@ collect_basedir() {
     done
     echo "$BASEDIR"
 }
+
+collect_scriptdir() {
+    local SCRIPTDIR
+    while true
+    do
+        SCRIPTDIR=$(ask "script directory" "$DEFAULT_SCRIPTDIR")
+        if test ! -e "$SCRIPTDIR"; then
+            echo "not exists: $SCRIPTDIR" >&2
+            continue
+        elif test ! -w "$SCRIPTDIR"; then
+            echo "not writable: $SCRIPTDIR" >&2
+            continue
+        elif ! echo "$PATH" | grep -qE "$SCRIPTDIR"; then
+            echo "not in PATH: $SCRIPTDIR" >&2
+            continue
+        else
+            break
+        fi
+    done
+    echo "$SCRIPTDIR"
+}
+
+collect_gpgkeyid() {
+    local GPGKEYID
+    while true
+    do
+        GPGKEYID=$(ask "gpg key id" "$DEFAULT_GPGKEYID")
+        if ! gpg --list-key | grep -qE "$GPGKEYID"; then
+            echo "not exists: $GPGKEYID" >&2
+            continue
+        else
+            break
+        fi
+    done
+    echo "$GPGKEYID"
+}
+
 # collect information from the user and the system
 collect_info() {
+cat << EOF
+---------------- NOTECE -----------------------
+Text in the square bracket is the default
+value, press enter to accept it, empty value
+is not allowed. 
+
+'base directory': you shall accept the default
+unless the path already exists.
+
+'sending server': support SMTP only.
+
+'receiving server': not used for backup, you
+can accept the same value as the sending one.
+
+'script directory': shall be in you PATH, and
+you shall have write permission to it.
+
+'gpg key id': key for mail encryption, it
+shall exist in you system.
+-----------------------------------------------
+EOF
+
     MSMTP=$(which msmtp)
     PROCMAIL=$(which procmail)
+
     BASEDIR=$(collect_basedir)
     EMAILADDR=$(ask "email address")
     USERNAME=$(ask "user name" "$EMAILADDR")
     PASSWORD=$(ask -s "password")
     local domain_name=$(awk -F@ '{print $2}' <<< "$EMAILADDR")
     SMTPSERVER=$(ask "sending server" "smtp.$domain_name")
-    POPSERVER=$(ask "receiving server" "pop.$domain_name")
+    POPSERVER=$(ask "receiving server" "$SMTPSERVER")
+
+    SCRIPTDIR=$(collect_scriptdir)
+    RECIPIENT=$(ask "receiving email address")
+    GPGKEYID=$(collect_gpgkeyid)
 }
 
 copy_structure() {
-    cp -rv install-data/structure $BASEDIR
+    cp -r install-data/structure $BASEDIR
 }
 
 update_configs() {
@@ -96,8 +164,22 @@ update_configs() {
         $BASEDIR/conf/procmailrc
 }
 
+copy_scripts() {
+    cp install-data/b2e install-data/fb2e $SCRIPTDIR/
+
+    local B2E=$SCRIPTDIR/b2e
+    sed -i \
+        -e "s#{{RECIPIENT}}#$RECIPIENT#g" \
+        -e "s#{{GPGKEYID}}#$GPGKEYID#g" \
+        -e "s#{{BASEDIR}}#$BASEDIR#g" \
+        -e "s#{{B2E}}#$B2E#g" \
+        $SCRIPTDIR/b2e \
+        $SCRIPTDIR/fb2e
+}
+
 DEP="mutt msmtp gpg getmail"
 DEFAULT_BASEDIR="$HOME/.backup_to_mail"
+DEFAULT_SCRIPTDIR="$HOME/bin"
 cd $(dirname $0)
 
 if ! check_dep; then
@@ -112,8 +194,8 @@ copy_structure
 
 # update the config file with the supplied info
 update_configs
-#debug
-exit
 
 # copy the scripts
 copy_scripts
+
+exit 0

@@ -1,0 +1,40 @@
+#!/bin/bash
+# Author: Joshua Chen
+# Date: 2015-08-29
+# Location: Shenzhen
+# Name: fb2e
+# Description: backup a set of particular files using
+# the b2e tool, make it fast for frequently repeated backups.
+
+###############################################
+#                                             #
+#           How to configure?                 # 
+#                                             #
+#       set the 'files' variable              #
+#       set the subject appropriately         #
+#       set ENABLED to 1                      #
+#                                             #
+###############################################
+
+# files to backup, one path a line,
+# line shall end with a newline character
+#
+# files="/path/to/file1"$'\n'
+# files+="/path/to/file2"$'\n'
+
+ENABLED=0
+B2E={{B2E}}
+
+if test "$ENABLED" = 0; then
+    echo "not enabled" >&
+    exit 1
+fi
+
+if test -z "$files"; then
+    echo "no files configured to back up" >&
+    exit 1
+fi
+
+# You shall change the subject appropriately
+subject="Data backup (XX, YY, ZZ) $(date +'%Y%m%d%H%M')"
+tar -vcf - -T <(echo -n "$files") | B2E -s "$subject"
