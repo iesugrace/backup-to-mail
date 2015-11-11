@@ -2,7 +2,7 @@
 # Author: Joshua Chen
 # Date: 2015-08-29
 # Location: Shenzhen
-# Name: fb2e
+# Name: fb
 # Description: backup a set of particular files using
 # the b2e tool, make it fast for frequently repeated backups.
 

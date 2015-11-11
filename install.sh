@@ -170,7 +170,7 @@ update_configs() {
 }
 
 copy_scripts() {
-    cp data/b2e data/fb2e $SCRIPTDIR/
+    cp data/b2e data/fb $SCRIPTDIR/
 
     local B2E=$SCRIPTDIR/b2e
     sed -i \
@@ -179,7 +179,7 @@ copy_scripts() {
         -e "s#{{BASEDIR}}#$BASEDIR#g" \
         -e "s#{{B2E}}#$B2E#g" \
         $SCRIPTDIR/b2e \
-        $SCRIPTDIR/fb2e
+        $SCRIPTDIR/fb
 }
 
 DEP="mutt msmtp gpg getmail"
