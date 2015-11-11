@@ -132,7 +132,7 @@ EOF
     PROCMAIL=$(which procmail)
 
     BASEDIR=$(collect_basedir)
-    EMAILADDR=$(ask "email address")
+    EMAILADDR=$(ask "sending email address")
     USERNAME=$(ask "user name" "$EMAILADDR")
     PASSWORD=$(ask -s "password")
     local domain_name=$(awk -F@ '{print $2}' <<< "$EMAILADDR")
