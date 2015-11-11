@@ -145,7 +145,7 @@ EOF
 }
 
 copy_structure() {
-    cp -fr install-data/structure $BASEDIR
+    cp -fr data/structure $BASEDIR
     if test $? -ne 0; then
         echo "failed to copy structural data" >&2
         exit 1
@@ -169,7 +169,7 @@ update_configs() {
 }
 
 copy_scripts() {
-    cp install-data/b2e install-data/fb2e $SCRIPTDIR/
+    cp data/b2e data/fb2e $SCRIPTDIR/
 
     local B2E=$SCRIPTDIR/b2e
     sed -i \
