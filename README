@@ -3,5 +3,33 @@ A tool to backup small files to mail server without exposing privacy.
 Components:
     1. mutt         <-- mail agent
     2. msmtp        <-- smtp sender
-    3. gpg          <-- encryption
-    4. script       <-- the tool
+    3. xz           <-- compress
+    4. gpg          <-- encryption
+    5. script       <-- the tool
+
+
+INSTALL
+    1. install the dependencies
+        $ apt-get install xz-utils mutt msmtp gnupg getmail4
+
+    2. run the script install.sh, and it will guide you through.
+        $ ./install.sh
+
+
+How to use
+    The script install.sh installs two executable scripts
+    to your PATH, they're b2e and fb, fb is a helper script
+    that makes it simple to backup some pre-set files.
+
+    The following command will pack the directory /path/to/dir,
+    compress it, encrypt it, and then send it to the email
+    address which you configured during the installation, email
+    subject is "xx backup".
+
+        $ tar cf - /path/to/dir | b2e -s "xx backup"
+
+    When you want to backup many files at a time on a regular
+    basis, fb may be a better choice, just open the fb script,
+    edit it, put your file paths in it, and then run it:
+
+        $ fb
