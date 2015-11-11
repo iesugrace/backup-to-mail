@@ -49,11 +49,25 @@ ask() {
     done
 }
 
+collect_basedir() {
+    local BASEDIR
+    while true
+    do
+        BASEDIR=$(ask "base directory" "$DEFAULT_BASEDIR")
+        if test -e "$BASEDIR"; then
+            echo "already exists: $BASEDIR" >&2
+            continue
+        else
+            break
+        fi
+    done
+    echo "$BASEDIR"
+}
 # collect information from the user and the system
 collect_info() {
     MSMTP=$(which msmtp)
     PROCMAIL=$(which procmail)
-    BASEDIR=$(ask "base directory" "$DEFAULT_BASEDIR")
+    BASEDIR=$(collect_basedir)
     EMAILADDR=$(ask "email address")
     USERNAME=$(ask "user name" "$EMAILADDR")
     PASSWORD=$(ask -s "password")
